@@ -12,17 +12,25 @@ users = {};
 //start socket
 io.on('connection', (socket) => {
     console.log('a user connected');
-    
-  // add new user to room 
+
+    // add new user to room     
     socket.on('new-user-joined', (name) => {
         users[socket.id] = name;
         socket.broadcast.emit('user-joined',
-            name)
+            {
+                name: name,
+                socketId: socket.id
+
+            })
     });
 
-  
+
     socket.on("send", message => {
-         socket.broadcast.emit("receive",message)
+        socket.broadcast.emit("receive", 
+        {
+            message:message,
+            socketId: socket.id
+        })
     })
 
     socket.on('disconnect', () => {
